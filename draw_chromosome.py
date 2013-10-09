@@ -14,7 +14,7 @@ Image.register_save("PNG", _save)
 Image.register_extension("PNG", ".png")
 Image.register_mime("PNG", "image/png")
 
-def draw_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
+def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
     '''
     Draw chromosome
     @param draw: ImageDraw object
@@ -48,6 +48,28 @@ def draw_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, sc
         for y in stars:
             y += chr_width/2
             draw_legend(draw, "*", x+chr_width+10, y, None, font_size=35)
+
+def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
+    '''
+    Draw chromosome
+    @param draw: ImageDraw object
+    @param x: x coordinate of left top corner
+    @param y: y coordinate of left top corner
+    @param length: chromosome length
+    @param bands: bands list of ideograms
+    @param chr_width: chromosome width in px
+    @param name: chromosome name
+    @param scale: scaling, default value - 1
+    @param stars: list of star positions
+    '''
+    raise NotImplemented
+
+
+def draw_centromere():
+    raise NotImplemented
+
+def draw_telomere():
+    raise NotImplemented
 
 def draw_legend(draw, text, x, y, width, font_size=35, font_file="../fonts/arialbd.ttf", text_color="#000000"):
     ''' Draw legend on image.
