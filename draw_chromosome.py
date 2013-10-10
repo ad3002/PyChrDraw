@@ -110,3 +110,18 @@ def draw_full_legend(draw, x, y, names, colors_vals):
         draw.rectangle(rectbbox, fill=color, outline="#000000")
         draw_legend(draw, title, x + 80, y, None, font_size = 42)
 
+def draw_chromosome_scheme(draw, x, y):
+    ''' Draw chromosome scheme with cen and tel positions.
+    @param draw: ImageDraw object
+    @param x: x coordinate of left top corner
+    @param y: y coordinate of left top corner
+    '''
+    bands = [
+        (y+130, 100, "#cccccc","#cccccc"),
+        (y+240, 280, "#eeeeee","#eeeeee"),
+        (y+530, 100, "#cccccc","#cccccc"),
+    ]
+    draw_chromosome(draw, x-10, y+130, 500, bands=bands, chr_width=70)
+    draw_legend(draw, "PeriCen", x + 90, y+180, None, font_size = 42)
+    draw_legend(draw, "Arm", x + 90, y+380, None, font_size = 42)
+    draw_legend(draw, "PeriTel", x + 90, y+580, None, font_size = 42)
