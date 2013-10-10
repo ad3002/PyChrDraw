@@ -5,7 +5,7 @@
 #@author: Aleksey Komissarov
 #@contact: ad3002@gmail.com
 
- import Image, ImageDraw, ImageFont
+import Image, ImageDraw, ImageFont
 
 # fix for Windows-specific bug with png extension registering
 from PIL.PngImagePlugin import _save, PngImageFile, _accept
@@ -15,8 +15,7 @@ Image.register_extension("PNG", ".png")
 Image.register_mime("PNG", "image/png")
 
 def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
-    '''
-    Draw chromosome
+    ''' Draw chromosome
     @param draw: ImageDraw object
     @param x: x coordinate of left top corner
     @param y: y coordinate of left top corner
@@ -121,7 +120,7 @@ def draw_chromosome_scheme(draw, x, y):
         (y+240, 280, "#eeeeee","#eeeeee"),
         (y+530, 100, "#cccccc","#cccccc"),
     ]
-    draw_chromosome(draw, x-10, y+130, 500, bands=bands, chr_width=70)
+    draw_vertical_chromosome(draw, x-10, y+130, 500, bands=bands, chr_width=70)
     draw_legend(draw, "PeriCen", x + 90, y+180, None, font_size = 42)
     draw_legend(draw, "Arm", x + 90, y+380, None, font_size = 42)
     draw_legend(draw, "PeriTel", x + 90, y+580, None, font_size = 42)
