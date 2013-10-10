@@ -86,3 +86,27 @@ def draw_legend(draw, text, x, y, width, font_size=35, font_file="../fonts/arial
         w, h = draw.textsize(text, font)
         x += (width - w)/2
     draw.text((x, y), text, font=font, fill=text_color)
+
+def draw_full_legend(draw, x, y, names, colors_vals):
+    ''' Draw legend for color annotated images
+    @param draw: ImageDraw object
+    @param x: x coordinate of left top corner
+    @param y: y coordinate of left top corner
+    @param names: list of names
+    @param colors_vals: dictionary from name to color
+    '''
+
+    # draw borders
+    rectbbox = [x-50, y+35, x + 350, y +1230]
+    draw.rectangle(rectbbox, fill="#ffffff", outline="#dddddd")
+    rectbbox = [x-50+1, y+35+1, x + 350-1, y +1230-1]
+    draw.rectangle(rectbbox, fill="#ffffff", outline="#dddddd")
+
+    # draw legend
+    for i, title in enumerate(names):
+        y +=  70
+        color = colors_vals[title]
+        rectbbox = [x, y, x + 50, y + 50]
+        draw.rectangle(rectbbox, fill=color, outline="#000000")
+        draw_legend(draw, title, x + 80, y, None, font_size = 42)
+
