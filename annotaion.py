@@ -19,7 +19,25 @@ def read_snp_position_data(file_name):
     	bands[chrom].append(int(pos))
     return bands
 
-def compute_intervals(bands, chrs_lengths, bp_per_pixel=100000, max_cutoff=70):
+def compute_interval_freq(bands, chrs_lengths, bp_per_pixel=100000):
+    ''' Compute SNPs intervals for drawing.
+    @param bands: dictionary chr_name -> positions
+    @param chrs_lengths: dictionary chr_name -> chr length
+    @param bp_per_pixel: number nucleotides per pixel on image
+    '''
+    chr2pos2freq = {}
+    for name, length in chrs_lengths.items():
+    	snps = bands[name]
+    	snps.sort()
+    	bins = defaultdict(int)
+    	for snip in snps:
+    		b = snip / bp_per_pixel
+    		bins[b*bp_per_pixel] += 1
+    	max_value = float(max(bins.values()))
+    	chr2pos2freq[name] = bins
+    return chr2pos2freq, max_value
+
+def normalize_interval_freq(bands, chrs_lengths, bp_per_pixel=100000, max_cutoff=70):
     ''' Compute normalized SNPs intervals for drawing.
     @param bands: dictionary chr_name -> positions
     @param chrs_lengths: dictionary chr_name -> chr length
