@@ -6,6 +6,9 @@
 #@contact: ad3002@gmail.com
 
 from collections import defaultdict
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 def read_snp_position_data(file_name):
     ''' Read SNP positions from file.
@@ -58,7 +61,68 @@ def normalize_interval_freq(chr2pos2freq, distribution, max_cutoff=70):
     		chr2pos2freq[name][k] /= max_cutoff
     return chr2pos2freq
 
-# if __name__ == '__main__':
-# 	file_name = "/Users/akomissarov/Downloads/cheetah.sSNP.tab/cheetah.sSNP.tab"
-# 	bands = read_snp_position_data(file_name)
-# 	
+def draw_distribution_plot(distribution, image_file):
+	'''
+	'''
+	x = []
+	y = []
+	for k, v in distribution.items():
+		x.append(k)
+		y.append(v)	
+	x = np.asarray(x)
+	y = np.asarray(y)
+	plt.plot(x,y)
+	print "Save image to", image_file
+	plt.savefig(image_file)
+
+if __name__ == '__main__':
+	chrs_lengths = {
+    'chrA1': 247373621,
+    'chrA2': 168782860,
+    'chrA3': 146459317,
+    'chrB1': 211444635,
+    'chrB2': 158019773,
+    'chrB3': 154608951,
+    'chrB4': 149370783,
+    'chrC1': 225678925,
+    'chrC2': 161383699,
+    'chrD1': 123211129,
+    'chrD2': 90492622,
+    'chrD3': 98640036,
+    'chrD4': 98204123,
+    'chrE1': 63723751,
+    'chrE2': 65984037,
+    'chrE3': 44542608,
+    'chrF1': 72274105,
+    'chrF2': 84331791,
+	}
+
+	chrs_lengths = {
+        'A1': 239302903,
+        'A2': 169043629,
+        'A3': 142459683,
+        'B1': 205241052,
+        'B2': 154261789,
+        'B3': 148491654,
+        'B4': 144259557,
+        'C1': 221441202,
+        'C2': 157659299,
+        'D1': 116869131,
+        'D2': 89822065,
+        'D3': 95741729,
+        'D4': 96020406,
+        'E1': 63002102,
+        'E2': 64039838,
+        'E3': 43024555,
+        'F1': 68669167,
+        'F2': 82763536,
+        'X': 126427096,
+    }
+
+	file_name = "/Users/akomissarov/Downloads/cat_snp.txt"
+	# file_name = "/Users/akomissarov/Downloads/cheetah.sSNP.tab/cheetah.sSNP.tab"
+	image_file = "cat.png"
+	bands = read_snp_position_data(file_name)
+	chr2pos2freq, distribution = compute_interval_freq(bands, chrs_lengths, bp_per_pixel=10000)
+	draw_distribution_plot(distribution, image_file)
+	
