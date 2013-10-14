@@ -62,7 +62,7 @@ def normalize_interval_freq(chr2pos2freq, distribution, max_cutoff=70):
     return chr2pos2freq
 
 def draw_distribution_plot(distribution, image_file):
-	'''
+	''' Draw distribution plot.
 	'''
 	x = []
 	y = []
