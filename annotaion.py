@@ -24,6 +24,7 @@ def compute_interval_freq(bands, chrs_lengths, bp_per_pixel=100000):
     @param bands: dictionary chr_name -> positions
     @param chrs_lengths: dictionary chr_name -> chr length
     @param bp_per_pixel: number nucleotides per pixel on image
+    @return: (chr2pos2freq, max_value)
     '''
     chr2pos2freq = {}
     for name, length in chrs_lengths.items():
@@ -37,24 +38,13 @@ def compute_interval_freq(bands, chrs_lengths, bp_per_pixel=100000):
     	chr2pos2freq[name] = bins
     return chr2pos2freq, max_value
 
-def normalize_interval_freq(bands, chrs_lengths, bp_per_pixel=100000, max_cutoff=70):
+def normalize_interval_freq(chr2pos2freq, max_cutoff=70):
     ''' Compute normalized SNPs intervals for drawing.
     @param bands: dictionary chr_name -> positions
     @param chrs_lengths: dictionary chr_name -> chr length
     @param bp_per_pixel: number nucleotides per pixel on image
     @param max_cutoff: maximal value of enrichment in interval
     '''
-    max_cutoff = float(max_cutoff)
-    chr2pos2freq = {}
-    for name, length in chrs_lengths.items():
-    	snps = bands[name]
-    	snps.sort()
-    	bins = defaultdict(int)
-    	for snip in snps:
-    		b = snip / bp_per_pixel
-    		bins[b*bp_per_pixel] += 1
-    	max_value = float(max(bins.values()))
-    	chr2pos2freq[name] = bins
     M = [max(chr2pos2freq[x].values()) for x in chr2pos2freq.keys()]
     m = float(max(M))
     for name in chr2pos2freq:
