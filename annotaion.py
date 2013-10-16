@@ -8,7 +8,7 @@
 from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
-
+from trseeker.tools.draw_tools import draw_distribution_plot
 
 def read_snp_position_data(file_name):
     ''' Read SNP positions from file.
@@ -60,20 +60,6 @@ def normalize_interval_freq(chr2pos2freq, distribution, max_cutoff=70):
     			chr2pos2freq[name][k] = max_cutoff
     		chr2pos2freq[name][k] /= max_cutoff
     return chr2pos2freq
-
-def draw_distribution_plot(distribution, image_file):
-	''' Draw distribution plot.
-	'''
-	x = []
-	y = []
-	for k, v in distribution.items():
-		x.append(k)
-		y.append(v)	
-	x = np.asarray(x)
-	y = np.asarray(y)
-	plt.plot(x,y)
-	print "Save image to", image_file
-	plt.savefig(image_file)
 
 if __name__ == '__main__':
 	chrs_lengths = {
