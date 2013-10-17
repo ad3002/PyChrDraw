@@ -9,6 +9,7 @@ from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 from trseeker.tools.draw_tools import draw_distribution_plot
+from PyChrDraw.sigmoid import estimate_sigmoid_parameter, sigmoid
 
 def read_snp_position_data(file_name):
     ''' Read SNP positions from file.
@@ -83,32 +84,42 @@ if __name__ == '__main__':
     'chrF2': 84331791,
 	}
 
-	chrs_lengths = {
-        'A1': 239302903,
-        'A2': 169043629,
-        'A3': 142459683,
-        'B1': 205241052,
-        'B2': 154261789,
-        'B3': 148491654,
-        'B4': 144259557,
-        'C1': 221441202,
-        'C2': 157659299,
-        'D1': 116869131,
-        'D2': 89822065,
-        'D3': 95741729,
-        'D4': 96020406,
-        'E1': 63002102,
-        'E2': 64039838,
-        'E3': 43024555,
-        'F1': 68669167,
-        'F2': 82763536,
-        'X': 126427096,
-    }
+	# chrs_lengths = {
+ #        'A1': 239302903,
+ #        'A2': 169043629,
+ #        'A3': 142459683,
+ #        'B1': 205241052,
+ #        'B2': 154261789,
+ #        'B3': 148491654,
+ #        'B4': 144259557,
+ #        'C1': 221441202,
+ #        'C2': 157659299,
+ #        'D1': 116869131,
+ #        'D2': 89822065,
+ #        'D3': 95741729,
+ #        'D4': 96020406,
+ #        'E1': 63002102,
+ #        'E2': 64039838,
+ #        'E3': 43024555,
+ #        'F1': 68669167,
+ #        'F2': 82763536,
+ #        'X': 126427096,
+ #    }
 
-	file_name = "/Users/akomissarov/Downloads/cat_snp.txt"
-	# file_name = "/Users/akomissarov/Downloads/cheetah.sSNP.tab/cheetah.sSNP.tab"
-	image_file = "cat.png"
+	# file_name = "/Users/akomissarov/Downloads/cat_snp.txt"
+	file_name = "/Users/akomissarov/Downloads/cheetah.sSNP.tab/cheetah.sSNP.tab"
+	image_file = "/home/bioinf/public/test_ch.png"
+    norm_image_file = "/home/bioinf/public/test_norm_ch.png"
+
 	bands = read_snp_position_data(file_name)
 	chr2pos2freq, distribution = compute_interval_freq(bands, chrs_lengths, bp_per_pixel=10000)
-	draw_distribution_plot(distribution, image_file)
+    draw_distribution_plot(distribution, image_file)
+
+    
+    maxv = max(distribution.values())
+    a = estimate_sigmoid_parameter(maxv)
+    for k in distribution:
+        distribution[k] = sigmoid[distribution[k]]
+
+	draw_distribution_plot(distribution, norm_image_file)
 	
