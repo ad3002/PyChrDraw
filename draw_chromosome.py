@@ -5,6 +5,25 @@
 #@author: Aleksey Komissarov
 #@contact: ad3002@gmail.com
 import Image, ImageDraw, ImageFont
+from collections import defaultdict
+
+def load_bands_from_bed(file_name, color="#000000", border_color="#000000"):
+    ''' Load bands data from BED file.
+    @param file_name: path to BED file
+    @param color: band color
+    @param border_color: border color
+    @return: dictionary chr name to list of bands
+    '''
+    chr2bands = defaultdict(list)
+    with open(file_name) as fh:
+        for line in fh:
+            data = line.split()
+            chromosome = data[0]
+            start = int(data[1])
+            end = int(data[2])
+            band = (start, end-start, color, border_color)
+            chr2bands[chromosome].append(band)
+    return chr2bands
 
 def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
     ''' Normalize chrs sizes by maximal chromosome length.
