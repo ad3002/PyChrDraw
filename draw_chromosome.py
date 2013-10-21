@@ -91,9 +91,10 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     draw.line((x, y, x, y+chr_width), fill="#ffffff")
     draw.line((x + length, y, x + length, y + chr_width), fill="#ffffff")
     
+    shift = w + 30 + chr_width
     for band in bands:
-        y, length, color, outline = band
-        x += chr_width/2
+        (x, length, color, outline) = band
+        x += shift
         rectbbox = [x, y+1, x+length, y+chr_width-1]
         draw.rectangle(rectbbox, fill=color, outline=outline)
     if stars:
