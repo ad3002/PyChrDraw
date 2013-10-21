@@ -4,15 +4,7 @@
 #@created: 09.10.2013
 #@author: Aleksey Komissarov
 #@contact: ad3002@gmail.com
-
 import Image, ImageDraw, ImageFont
-
-# fix for Windows-specific bug with png extension registering
-from PIL.PngImagePlugin import _save, PngImageFile, _accept
-Image.register_open("PNG", PngImageFile, _accept)
-Image.register_save("PNG", _save)
-Image.register_extension("PNG", ".png")
-Image.register_mime("PNG", "image/png")
 
 def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
     ''' Draw chromosome
@@ -20,12 +12,14 @@ def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name
     @param x: x coordinate of left top corner
     @param y: y coordinate of left top corner
     @param length: chromosome length
-    @param bands: bands list of ideograms
+    @param bands: bands list of positions
     @param chr_width: chromosome width in px
     @param name: chromosome name
     @param scale: scaling, default value - 1
     @param stars: list of star positions
     '''
+    if not bands:
+        bands = []
     arcbbox = (x, y, x + chr_width, y + chr_width)
     draw.arc(arcbbox, 180, 0, fill='#000000')
     y += chr_width/2
@@ -61,7 +55,29 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     @param scale: scaling, default value - 1
     @param stars: list of star positions
     '''
-    raise NotImplemented
+    if not bands:
+        bands = []
+    arcbbox = (x, y, x + chr_width, y + chr_width)
+    draw.arc(arcbbox, 180, 0, fill='#000000')
+    x += chr_width/2
+    arcbbox = (x + length-chr_width/2, y, x + length+chr_width/2, y + chr_width)
+    draw.arc(arcbbox, 0, 180, fill='#000000')
+    rectbbox = [x, y, x + length, y + chr_width]
+    draw.rectangle(rectbbox, fill="#ffffff", outline="#000000")
+    draw.line((x, y, x, y+chr_width), fill="#ffffff")
+    draw.line((x + length, y, x + length, y + chr_width), fill="#ffffff")
+    
+    if name:
+        draw_legend(draw, name, x+length+chr_width/2+25, y, chr_width)
+    for band in bands:
+        y, length, color, outline = band
+        x += chr_width/2
+        rectbbox = [x, y+1, x+length, y+chr_width-1]
+        draw.rectangle(rectbbox, fill=color, outline=outline)
+    if stars:
+        for x in stars:
+            x += chr_width/2
+            draw_legend(draw, "*", x, y+chr_width+10, None, font_size=35)
 
 
 def draw_centromere():
@@ -70,7 +86,7 @@ def draw_centromere():
 def draw_telomere():
     raise NotImplemented
 
-def draw_legend(draw, text, x, y, width, font_size=35, font_file="../fonts/arialbd.ttf", text_color="#000000"):
+def draw_legend(draw, text, x, y, width, font_size=35, font_file="/Users/akomissarov/Dropbox/workspace/PyChrDraw/fonts/arialbd.ttf", text_color="#000000"):
     ''' Draw legend on image.
     @param draw: ImageDraw object
     @param x: x coordinate of left top corner
