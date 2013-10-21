@@ -1,3 +1,11 @@
+canvas:
+  width: 3000
+  height: 4300
+  left_corner: 100
+  top_corner: 100
+  real_chr_size: 2000
+  space_between_chr: 200
+  chr_width: 100
 chromosome_sizes:
   chr1: 195471971
   chr2: 182113224
