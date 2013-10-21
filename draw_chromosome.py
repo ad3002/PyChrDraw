@@ -12,7 +12,7 @@ def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name
     @param x: x coordinate of left top corner
     @param y: y coordinate of left top corner
     @param length: chromosome length
-    @param bands: bands list of positions
+    @param bands: bands list of (start, lenght, inner_color, border_color)
     @param chr_width: chromosome width in px
     @param name: chromosome name
     @param scale: scaling, default value - 1
@@ -49,12 +49,16 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     @param x: x coordinate of left top corner
     @param y: y coordinate of left top corner
     @param length: chromosome length
-    @param bands: bands list of ideograms
+    @param bands: bands list of (start, lenght, inner_color, border_color)
     @param chr_width: chromosome width in px
     @param name: chromosome name
     @param scale: scaling, default value - 1
     @param stars: list of star positions
     '''
+    if name:
+        (w, h) = draw_legend(draw, name, x, y, None, height=chr_width)
+    x += w
+
     if not bands:
         bands = []
     arcbbox = (x, y, x + chr_width, y + chr_width)
@@ -67,8 +71,6 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     draw.line((x, y, x, y+chr_width), fill="#ffffff")
     draw.line((x + length, y, x + length, y + chr_width), fill="#ffffff")
     
-    if name:
-        draw_legend(draw, name, x+length+chr_width/2+25, y, chr_width)
     for band in bands:
         y, length, color, outline = band
         x += chr_width/2
@@ -86,7 +88,7 @@ def draw_centromere():
 def draw_telomere():
     raise NotImplemented
 
-def draw_legend(draw, text, x, y, width, font_size=35, font_file="/Users/akomissarov/Dropbox/workspace/PyChrDraw/fonts/arialbd.ttf", text_color="#000000"):
+def draw_legend(draw, text, x, y, width, height=None, font_size=35, font_file="/Users/akomissarov/Dropbox/workspace/PyChrDraw/fonts/arialbd.ttf", text_color="#000000"):
     ''' Draw legend on image.
     @param draw: ImageDraw object
     @param x: x coordinate of left top corner
@@ -97,10 +99,13 @@ def draw_legend(draw, text, x, y, width, font_size=35, font_file="/Users/akomiss
     @param text_color: text color, default value - #000000
     '''
     font = ImageFont.truetype(font_file, font_size)
+    w, h = draw.textsize(text, font)
     if width:
-        w, h = draw.textsize(text, font)
         x += (width - w)/2
+    if height:
+        y += (height - h)/2    
     draw.text((x, y), text, font=font, fill=text_color)
+    return (w, h)
 
 def draw_full_legend(draw, x, y, names, colors_vals, width=350, height=1230):
     ''' Draw legend for color annotated images
