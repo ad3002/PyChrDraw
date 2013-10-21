@@ -6,19 +6,25 @@
 #@contact: ad3002@gmail.com
 import Image, ImageDraw, ImageFont
 
-def normalize_chromosome_sizes(chromosomes, bands=None):
+def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
     ''' Normalize chrs sizes by maximal chromosome length.
     @param chromosomes: dictionary with chromosome sizes
+    @param real_size: maximum size in px
     @param bands: dict of chr name to list of (start, length, color, border) tuples for bands
     @return: (chromosomes, bands)
     '''
     max_chr = float(max(chromosomes.values()))
     for key in chromosomes:
-        chromosomes[key] /= max_chr
+        chromosomes[key] = int(round(real_size * chromosomes[key] / max_chr, 0))
     if bands:
         for key in bands:
             for i, (start, length, color, border) in enumerate(bands[key]):
-                bands[key][i] = (int(start/max_chr), int(length/max_chr), color, border)
+                bands[key][i] = (   
+                                    int(round(real_size*start/max_chr, 0)), 
+                                    int(round(real_size*length/max_chr, 0)), 
+                                    color, 
+                                    border,
+                                )
     return chromosomes, bands
 
 def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
