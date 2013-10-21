@@ -6,6 +6,16 @@
 #@contact: ad3002@gmail.com
 import Image, ImageDraw, ImageFont
 
+def normalize_chromome_sizes(chromosomes, canvas):
+    ''' Normalize chrs sizes to canvas size.
+    @param chromosomes: dictionary with chromosome sizes
+    @param canvas_width: canvas size for normalization
+    '''
+    max_chr = float(max(chromosomes.values()))
+    for key in chromosomes:
+        chromosomes[key] /= max_chr
+    return chromosomes
+
 def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
     ''' Draw chromosome
     @param draw: ImageDraw object
