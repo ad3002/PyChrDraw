@@ -1,3 +1,11 @@
+canvas:
+  width: 3000
+  height: 4300
+  left_corner: 100
+  top_corner: 100
+  real_chr_size: 2000
+  space_between_chr: 200
+  chr_width: 50
 chromosome_sizes:
   1: 249250621
   2: 243199373
@@ -74,3 +82,10 @@ chromosome_order:
 centromere_positions:
 annotation_files:
   polyG: data.bed
+orphans:
+  - /stripe/akomissarov/orphans/MDO101-1_NOBCX_NoIndex_L001_RD_E.fastqout_macs2_summits.bed
+  - /stripe/akomissarov/orphans/MDO101-2_NOBCX_NoIndex_L002_RD_E.fastqout_macs2_summits.bed
+  - /stripe/akomissarov/orphans/MDO102-1_NOBCX_NoIndex_L001_RD_E.fastqout_macs2_summits.bed
+  - /stripe/akomissarov/orphans/MDO102-2_NOBCX_NoIndex_L002_RD_E.fastqout_macs2_summits.bed
+  - /stripe/akomissarov/orphans/MDO200-1_NOBCX_NoIndex_L001_RD_E.fastqout_macs2_summits.bed
+  - /stripe/akomissarov/orphans/MDO200-2_NOBCX_NoIndex_L002_RD_E.fastqout_macs2_summits.bed
