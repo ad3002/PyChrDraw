@@ -7,7 +7,7 @@
 import Image, ImageDraw, ImageFont
 from collections import defaultdict
 
-def load_bands_from_bed(file_name, color="#000000", border_color="#000000"):
+def load_bands_from_bed(file_name, color="#000000", border_color="#000000", last_column_color=False):
     ''' Load bands data from BED file.
     @param file_name: path to BED file
     @param color: band color
@@ -15,14 +15,21 @@ def load_bands_from_bed(file_name, color="#000000", border_color="#000000"):
     @return: dictionary chr name to list of bands
     '''
     chr2bands = defaultdict(list)
+    max_value = 0
     with open(file_name) as fh:
         for line in fh:
             data = line.split()
             chromosome = data[0]
             start = int(data[1])
             end = int(data[2])
+            if last_column_color:
+                color = float(data[-1])
+                if color > max_value:
+                    max_value = color
             band = (start, end-start, color, border_color)
             chr2bands[chromosome].append(band)
+    if last_column_color:
+        return chr2bands, max_value
     return chr2bands
 
 def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
