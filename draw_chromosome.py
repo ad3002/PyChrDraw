@@ -35,7 +35,7 @@ def load_bands_from_bed(file_name, color="#000000", border_color="#000000", last
         return chr2bands, max_value
     return chr2bands
 
-def load_snips_from_bed(file_name, color="#000000", border_color="#000000"):
+def load_snips_from_bed(file_name, color="#000000", border_color="#000000", name_fixer_dict=None):
     ''' Load bands data from BED file.
     @param file_name: path to BED file
     @param color: band color
@@ -50,6 +50,8 @@ def load_snips_from_bed(file_name, color="#000000", border_color="#000000"):
                 continue
             data = line.split()
             chromosome = data[0]
+            if name_fixer_dict and chromosome.startswith('chr'):
+                chromosome = name_fixer_dict[chromosome]
             start = int(data[1])
             band = (start, start+1, color, border_color)
             chr2bands[chromosome].append(band)
