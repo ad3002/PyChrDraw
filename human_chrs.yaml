@@ -1,11 +1,13 @@
 canvas:
-  width: 3000
-  height: 4300
+  # A4: 2480 X 3508 (600 dpi)
+  # (24*65)+(23*75)+200
+  width: 2480 
+  height: 3508
   left_corner: 100
   top_corner: 100
   real_chr_size: 2000
-  space_between_chr: 200
-  chr_width: 50
+  space_between_chr: 75
+  chr_width: 60
 chromosome_sizes:
   1: 249250621
   2: 243199373
