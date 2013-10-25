@@ -1,0 +1,112 @@
+canvas:
+  # A4: 2480 X 3508 (600 dpi)
+  # (24*65)+(23*75)+200
+  width: 2780 
+  height: 3508
+  left_corner: 100
+  top_corner: 100
+  real_chr_size: 2473
+  space_between_chr: 75
+  chr_width: 60
+  bg_color: #ffffff
+chromosome_sizes:
+  A1: 239302903
+  A2: 169043629
+  A3: 142459683
+  B1: 205241052
+  B2: 154261789
+  B3: 148491654
+  B4: 144259557
+  C1: 221441202
+  C2: 157659299
+  D1: 116869131
+  D2: 89822065
+  D3: 95741729
+  D4: 96020406
+  E1: 63002102
+  E2: 64039838
+  E3: 43024555
+  F1: 68669167
+  F2: 82763536
+  X: 126427096
+cheetah_chrs:
+  chrA1: 247373621
+  chrA2: 168782860
+  chrA3: 146459317
+  chrB1: 211444635
+  chrB2: 158019773
+  chrB3: 154608951
+  chrB4: 149370783
+  chrC1: 225678925
+  chrC2: 161383699
+  chrD1: 123211129
+  chrD2: 90492622
+  chrD3: 98640036
+  chrD4: 98204123
+  chrE1: 63723751
+  chrE2: 65984037
+  chrE3: 44542608
+  chrF1: 72274105
+  chrF2: 84331791
+cheetah_to_cat:
+    chrA1: A1
+    chrA2: A2
+    chrA3: A3
+    chrB1: B1
+    chrB2: B2
+    chrB3: B3
+    chrB4: B4
+    chrC1: C1
+    chrC2: C2
+    chrD1: D1
+    chrD2: D2
+    chrD3: D3
+    chrD4: D4
+    chrE1: E1
+    chrE2: E2
+    chrE3: E3
+    chrF1: F1
+    chrF2: F2
+    X: X
+cat_to_cheetah:
+    A1: chrA1
+    A2: chrA2
+    A3: chrA3
+    B1: chrB1
+    B2: chrB2
+    B3: chrB3
+    B4: chrB4
+    C1: chrC1
+    C2: chrC2
+    D1: chrD1
+    D2: chrD2
+    D3: chrD3
+    D4: chrD4
+    E1: chrE1
+    E2: chrE2
+    E3: chrE3
+    F1: chrF1
+    F2: chrF2
+    X: X
+chromosome_order:
+  - A1
+  - A2
+  - A3
+  - B1
+  - B2
+  - B3
+  - B4
+  - C1
+  - C2
+  - D1
+  - D2
+  - D3
+  - D4
+  - E1
+  - E2
+  - E3
+  - F1
+  - F2
+cat_snips_file: "cat_snp.txt"
+cheetah_snips_file: "cheetah.sSNP.tab"
+wild_cat_snipts_file: "felis_silvestris.heteroSNP.filtered.vcf"
