@@ -18,6 +18,9 @@ def load_bands_from_bed(file_name, color="#000000", border_color="#000000", last
     max_value = 0
     with open(file_name) as fh:
         for line in fh:
+            line = line.strip()
+            if line.startswith("#") or line is None:
+                continue
             data = line.split()
             chromosome = data[0]
             start = int(data[1])
@@ -30,6 +33,26 @@ def load_bands_from_bed(file_name, color="#000000", border_color="#000000", last
             chr2bands[chromosome].append(band)
     if last_column_color:
         return chr2bands, max_value
+    return chr2bands
+
+def load_snips_from_bed(file_name, color="#000000", border_color="#000000"):
+    ''' Load bands data from BED file.
+    @param file_name: path to BED file
+    @param color: band color
+    @param border_color: border color
+    @return: dictionary chr name to list of bands
+    '''
+    chr2bands = defaultdict(list)
+    with open(file_name) as fh:
+        for line in fh:
+            line = line.strip()
+            if line.startswith("#") or line is None:
+                continue
+            data = line.split()
+            chromosome = data[0]
+            start = int(data[1])
+            band = (start, start+1, color, border_color)
+            chr2bands[chromosome].append(band)
     return chr2bands
 
 def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
@@ -52,6 +75,106 @@ def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
                                     border,
                                 )
     return chromosomes, bands
+
+def draw_enrichmnet(settings):
+    
+    chrs = settings["cheetah_chrs"]
+    ref_chrs = settings["chromosome_sizes"]
+    bands = settings["cat_snips_file"]
+
+    real_chr_size = settings["canvas"]["real_chr_size"]
+
+    im = Image.new("RGBA", (settings["canvas"]["width"],settings["canvas"]["height"]), settings["canvas"]["bg_color"])
+    draw = ImageDraw.Draw(im)
+   
+    max_chr_length = float(max([x for x in chrs.values()]))
+    max_chr_length_ref = float(max([x for x in ref_chrs.values()]))
+    max_chr_length = max(max_chr_length, max_chr_length_ref)
+    print "-->", max_chr_length/real_chr_size
+
+    chrs = [(k, real_chr_size*(v/max_chr_length)) for k, v in chrs.items()]
+    ref_chrs = [(k, real_chr_size*(v/max_chr_length)) for (k, v) in ref_chrs]
+    chrs.sort()
+    x = settings["canvas"]["left_corner"]
+    y = settings["canvas"]["top_corner"]
+
+    font = ImageFont.truetype("/home/akomissarov/Dropbox/PyBioDraw/fonts/arialbd.ttf", 64)
+    
+    for i, (name, length) in enumerate(chrs):
+        rectbbox = [x, y, x+length, y + 100]
+        print rectbbox
+        draw.rectangle(rectbbox, fill="#ffffff", outline="#000000")
+
+        # for p in bands[name]:
+
+        #     p = 4000 * int(p) / max_chr_length 
+
+        #     rect = (x+p,y+2, x+p, y+96)
+
+        #     draw.line(rect, fill="#4096EE")
+        for k,v in settings["chr2pos2freq"][name].items():
+            
+            p = 2473 * int(k) / max_chr_length
+            rect = (x+p,y+2, x+p, y+96)
+            # color = int(v * 255)
+            # if color > 254:
+            #     color = 254
+            # color = 254 - color
+            # color = (color, color, color)
+            m = 10
+            for c in colors_map:
+                if abs(c[0] - v) < m:
+                    color = c[1:]
+                    m = abs(c[0] - v)
+            draw.line( rect, fill=color )
+
+        txt = str(len(settings["chr2pos2freq"][name]))
+        w, h = font.getsize(txt)
+        draw.text((settings["width"]-250, y+(100-h)/2), txt, font=font, fill="#000000")
+
+        y += 150
+
+        w, h = font.getsize(name)
+        draw.text((x-20-w, y-h), name, font=font, fill="#000000")
+        
+        (name, length) = ref_chrs.pop(0)
+        rectbbox = [x, y, x+length, y + 100]
+
+        draw.rectangle(rectbbox, fill="#ffffff", outline="#000000")
+        
+        # for p in settings["ref_bands"][name]:
+
+        #     p = 2473 * int(p) / max_chr_length 
+
+        #     rect = (x+p,y+2, x+p, y+98)
+
+        #     draw.line(rect, fill="#C79810")
+        # name = settings["cheetah2cat"][name]
+        for k,v in settings["REF_chr2pos2freq"][name].items():
+            
+            p = 2473 * int(k) / max_chr_length
+            rect = (x+p,y+2, x+p, y+98)
+            # color = int(v * 255)
+            # if color > 254:
+            #     color = 254
+            # color = 254 - color
+            # color = (color, color, color)
+            m = 10
+            for c in colors_map:
+                if abs(c[0] - v) < m:
+                    color = c[1:]
+                    m = abs(c[0] - v)
+            draw.line( rect, fill=color )
+
+        txt = str(len(settings["REF_chr2pos2freq"][name]))
+        w, h = font.getsize(txt)
+        draw.text((settings["width"]-250, y+(100-h)/2), txt, font=font, fill="#000000")
+
+        y += 250
+
+
+    print "Save file to", settings["output_file"]
+    im.save(settings["output_file"])
 
 def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
     ''' Draw chromosome
