@@ -104,7 +104,7 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     '''
     if name:
         (w, h) = draw_legend(draw, name, x, y, None, height=chr_width)
-    x += w + 30
+    x += 80
     if not bands:
         bands = []
     arcbbox = (x, y, x + chr_width, y + chr_width)
@@ -113,15 +113,14 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     arcbbox = (x + length-chr_width/2, y, x + length+chr_width/2, y + chr_width)
     draw.arc(arcbbox, 0, 360, fill='#000000')
     rectbbox = [x, y, x + length, y + chr_width]
+    chromosome_start = x
     draw.rectangle(rectbbox, fill="#ffffff", outline="#000000")
     draw.line((x, y, x, y+chr_width), fill="#ffffff")
     draw.line((x + length, y, x + length, y + chr_width), fill="#ffffff")
     
-    shift = w + 30 + chr_width
     for band in bands:
         (x, length, color, outline) = band
-        x += shift
-        rectbbox = [x, y+1, x+length, y+chr_width-1]
+        rectbbox = [x+chromosome_start, y+1, x+length+chromosome_start, y+chr_width-1]
         draw.rectangle(rectbbox, fill=color, outline=outline)
     if stars:
         for x in stars:
