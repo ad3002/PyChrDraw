@@ -135,7 +135,7 @@ def draw_centromere():
 def draw_telomere():
     raise NotImplemented
 
-def draw_legend(draw, text, x, y, width, height=None, font_size=35, font_file="/Users/akomissarov/Dropbox/workspace/PyChrDraw/fonts/arialbd.ttf", text_color="#000000"):
+def draw_legend(draw, text, x, y, width, height=None, font_size=35, font_file="/home/akomissarov/Dropbox/PyChrDraw/fonts/arialbd.ttf", text_color="#000000"):
     ''' Draw legend on image.
     @param draw: ImageDraw object
     @param x: x coordinate of left top corner
@@ -145,6 +145,7 @@ def draw_legend(draw, text, x, y, width, height=None, font_size=35, font_file="/
     @param font_file: path to ttf file, default value - ../fonts/arialbd.ttf
     @param text_color: text color, default value - #000000
     '''
+    text = str(text)
     font = ImageFont.truetype(font_file, font_size)
     w, h = draw.textsize(text, font)
     if width:
