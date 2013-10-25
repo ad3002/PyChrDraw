@@ -19,48 +19,68 @@ Image.register_extension("PNG", ".png")
 Image.register_mime("PNG", "image/png")
 
 from PyChrDraw.draw_chromosome import *
+from PyChrDraw.colors import *
 
 if __name__ == '__main__':
 
-        with open("human_chrs.yaml") as fh:
-                settings = yaml.load(fh)
+    with open("human_chrs.yaml") as fh:
+        settings = yaml.load(fh)
 
-        chrs = settings["chromosome_sizes"]
-        width = settings["canvas"]["width"]
-        height = settings["canvas"]["height"]
-        im = Image.new("RGBA", (width, height), "#ffffff")
-        draw = ImageDraw.Draw(im)
+    chrs = settings["chromosome_sizes"]
+    width = settings["canvas"]["width"]
+    height = settings["canvas"]["height"]
+    im = Image.new("RGBA", (width, height), "#ffffff")
+    draw = ImageDraw.Draw(im)
 
 
-        files = settings["orphans"]
-        name2chr = settings["ncbi_names"]
-        for file_name in files:
-                bands2chr, max_value = load_bands_from_bed(file_name, last_column_color=True)
-                print max_value
-                new_bands2chr = {}
-                for key in bands2chr:
-                    new_key = key.split("|")[3]
-                    if new_key in name2chr:
-                        new_key = name2chr[new_key]
-                        print key, "-->", new_key, "Size:", len(bands2chr[key])
-                    else:
-                        print "No key", new_key, "Size", len(bands2chr[key])
+    files = settings["orphans"]
+    name2chr = settings["ncbi_names"]
+    data_chrs = []
+    max_value = 0.
+    print "Load files..."
+    for file_name in files:
+        print "Load", file_name
+        bands2chr, _max_value = load_bands_from_bed(file_name, last_column_color=True)
+        if _max_value > max_value:
+            max_value = float(_max_value)
+        new_bands2chr = {}
+        for key in bands2chr:
+            new_key = key.split("|")[3]
+            if new_key in name2chr:
+                new_key = name2chr[new_key]
+                # print key, "-->", new_key, "Size:", len(bands2chr[key])
                 new_bands2chr[new_key] = bands2chr[key]
-                bands2chr = new_bands2chr
-                exit()
+            else:
+                pass
+                # print "No key", new_key, "Size", len(bands2chr[key])
+        data_chrs.append(new_bands2chr)
+
+    x = settings["canvas"]["left_corner"]
+    y = settings["canvas"]["top_corner"]
+    keys = settings["chromosome_order"]
+    real_chr_size = settings["canvas"]["real_chr_size"]
+    space_between_chr = settings["canvas"]["space_between_chr"]
+    chr_width = settings["canvas"]["chr_width"]
+
+    print "Compute colors..."
+    draw_data = []
+    for i, bands2chr in enumerate(data_chrs):
+        for key in bands2chr:
+            for (start, length, color, border_color) in bands2chr[key]:
+                c = get_color_by_map(color/max_value)
+                bands2chr[key] = (start, length, c, c)
+        ready_chrs, bands2chr = normalize_chromosome_sizes(chrs, real_chr_size, bands=bands2chr)
+        draw_data.append(ready_chrs, bands2chr)
+    print data_chrs[0]
+        
 
 
-        # x = settings["canvas"]["left_corner"]
-        # y = settings["canvas"]["top_corner"]
-        # keys = settings["chromosome_order"]
-        # real_chr_size = settings["canvas"]["real_chr_size"]
-        # space_between_chr = settings["canvas"]["space_between_chr"]
-        # chr_width = settings["canvas"]["chr_width"]
+    
 
-        # mouse_chrs, bands2chr = normalize_chromosome_sizes(mouse_chrs, real_chr_size, bands=bands2chr)
+    # 
 
-        # for key in keys:
-        #         length = mouse_chrs[key]
-        #         draw_horizontal_chromosome(draw, x, y, length, bands=bands2chr[key], chr_width=chr_width, name=key, scale=1, stars=None)
-        #         y += space_between_chr
-        # im.save("output_file.png")
+    # for key in keys:
+    #         length = mouse_chrs[key]
+    #         draw_horizontal_chromosome(draw, x, y, length, bands=bands2chr[key], chr_width=chr_width, name=key, scale=1, stars=None)
+    #         y += space_between_chr
+    # im.save("output_file.png")
