@@ -45,8 +45,8 @@ def get_color_by_map(intensity, color_map=colors_map_33):
 	'''
 	'''
 	m = 10
-	for (c, r, g, b) in colors_map:
+	for (c, r, g, b) in color_map:
 	    if abs(c - intensity) < m:
 	        color = (r, g, b)
-	        m = abs(c - v)
+	        m = abs(c - intensity)
 	return color
