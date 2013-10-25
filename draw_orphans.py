@@ -29,9 +29,6 @@ if __name__ == '__main__':
     chrs = settings["chromosome_sizes"]
     width = settings["canvas"]["width"]
     height = settings["canvas"]["height"]
-    im = Image.new("RGBA", (width, height), "#ffffff")
-    draw = ImageDraw.Draw(im)
-
 
     files = settings["orphans"]
     name2chr = settings["ncbi_names"]
@@ -67,18 +64,20 @@ if __name__ == '__main__':
     draw_data = []
     for i, chr2bands in enumerate(data_chrs):
         for key in chr2bands:
-            for i, (start, length, color, border_color) in enumerate(chr2bands[key]):
+            for j, (start, length, color, border_color) in enumerate(chr2bands[key]):
                 c = get_color_by_map(color/max_value)
-                chr2bands[key][i] = (start, length, c, c)
-        ready_chrs, chr2bands = normalize_chromosome_sizes(chrs, real_chr_size, bands=chr2bands)
+                data_chrs[i][key][j] = (start, length, c, c)
+        ready_chrs, chr2bands = normalize_chromosome_sizes(chrs, real_chr_size, bands=data_chrs[i])
         draw_data.append((ready_chrs, chr2bands))
     
 
     for i, (ready_chrs, chr2bands) in enumerate(draw_data):
+        im = Image.new("RGBA", (width, height), "#ffffff")
+        draw = ImageDraw.Draw(im)
         x = settings["canvas"]["left_corner"]
         y = settings["canvas"]["top_corner"]
         for key in keys:
             length = ready_chrs[key]
             draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=key, scale=1, stars=None)
-            y += 75
+            y += space_between_chr
         im.save("output_file_%s.png" % i)
