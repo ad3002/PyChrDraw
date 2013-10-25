@@ -5,11 +5,15 @@
 #@author: Aleksey Komissarov
 #@contact: ad3002@gmail.com
 
+import sys
+sys.path.append("/Users/akomissarov/Dropbox/workspace")
+
 from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 from trseeker.tools.draw_tools import draw_distribution_plot
 from PyChrDraw.sigmoid import estimate_sigmoid_parameter, sigmoid
+from PyChrDraw.colors import *
 
 def read_snp_position_data(file_name):
     ''' Read SNP positions from file.
@@ -38,8 +42,8 @@ def compute_interval_freq(bands, chrs_lengths, bp_per_pixel=100000):
     	snps = bands[name]
     	snps.sort()
     	bins = defaultdict(int)
-    	for snip in snps:
-    		b = snip / bp_per_pixel
+    	for (start, end, color, bcolor) in snps:
+    		b = start / bp_per_pixel
     		bins[b*bp_per_pixel] += 1
     	for value in bins.values():
     		distribution[value] += 1
@@ -53,8 +57,8 @@ def normalize_interval_freq(chr2pos2freq, distribution, max_cutoff=70):
     @param bp_per_pixel: number nucleotides per pixel on image
     @param max_cutoff: maximal value of enrichment in interval
     '''
-    M = [max(chr2pos2freq[x].values()) for x in chr2pos2freq.keys()]
-    m = float(max(M))
+    # M = [max(chr2pos2freq[x].values()) for x in chr2pos2freq.keys()]
+    # m = float(max(M))
     for name in chr2pos2freq:
     	for k in chr2pos2freq[name]:
     		if chr2pos2freq[name][k] > max_cutoff:
@@ -62,27 +66,39 @@ def normalize_interval_freq(chr2pos2freq, distribution, max_cutoff=70):
     		chr2pos2freq[name][k] /= max_cutoff
     return chr2pos2freq
 
+def freqs_to_bands(chr2pos2freq):
+    '''
+    '''
+    chr2bands = {}
+    for key in chr2pos2freq:
+        chr2bands[key] = []
+        for pos, freq in chr2pos2freq[key].items():
+            c = get_color_by_map(freq)
+            band = (pos, 1, c, c)
+            chr2bands[key].append(band)
+    return chr2bands
+
 if __name__ == '__main__':
-	chrs_lengths = {
-    'chrA1': 247373621,
-    'chrA2': 168782860,
-    'chrA3': 146459317,
-    'chrB1': 211444635,
-    'chrB2': 158019773,
-    'chrB3': 154608951,
-    'chrB4': 149370783,
-    'chrC1': 225678925,
-    'chrC2': 161383699,
-    'chrD1': 123211129,
-    'chrD2': 90492622,
-    'chrD3': 98640036,
-    'chrD4': 98204123,
-    'chrE1': 63723751,
-    'chrE2': 65984037,
-    'chrE3': 44542608,
-    'chrF1': 72274105,
-    'chrF2': 84331791,
-	}
+    chrs_lengths = {
+        'chrA1': 247373621,
+        'chrA2': 168782860,
+        'chrA3': 146459317,
+        'chrB1': 211444635,
+        'chrB2': 158019773,
+        'chrB3': 154608951,
+        'chrB4': 149370783,
+        'chrC1': 225678925,
+        'chrC2': 161383699,
+        'chrD1': 123211129,
+        'chrD2': 90492622,
+        'chrD3': 98640036,
+        'chrD4': 98204123,
+        'chrE1': 63723751,
+        'chrE2': 65984037,
+        'chrE3': 44542608,
+        'chrF1': 72274105,
+        'chrF2': 84331791,
+    }
 
 	# chrs_lengths = {
  #        'A1': 239302903,
@@ -107,19 +123,19 @@ if __name__ == '__main__':
  #    }
 
 	# file_name = "/Users/akomissarov/Downloads/cat_snp.txt"
-	file_name = "/Users/akomissarov/Downloads/cheetah.sSNP.tab/cheetah.sSNP.tab"
-	image_file = "/home/bioinf/public/test_ch.png"
-    norm_image_file = "/home/bioinf/public/test_norm_ch.png"
+    file_name = "/Users/akomissarov/Downloads/cheetah.sSNP.tab/cheetah.sSNP.tab"
+    image_file = "test_ch.png"
+    norm_image_file = "test_norm_ch.png"
+    bands = read_snp_position_data(file_name)
+    chr2pos2freq, distribution = compute_interval_freq(bands, chrs_lengths, bp_per_pixel=100000)
+    # draw_distribution_plot(distribution, image_file)
 
-	bands = read_snp_position_data(file_name)
-	chr2pos2freq, distribution = compute_interval_freq(bands, chrs_lengths, bp_per_pixel=10000)
-    draw_distribution_plot(distribution, image_file)
+    xmax = max(distribution.values())
 
-    
-    maxv = max(distribution.values())
-    a = estimate_sigmoid_parameter(maxv)
+    a = estimate_sigmoid_parameter(xmax)
     for k in distribution:
-        distribution[k] = sigmoid[distribution[k]]
+        new_val = sigmoid(distribution[k], a)
+        distribution[k] = new_val
 
-	draw_distribution_plot(distribution, norm_image_file)
-	
+
+    draw_distribution_plot(distribution, norm_image_file)
