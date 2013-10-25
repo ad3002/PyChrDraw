@@ -33,27 +33,28 @@ if __name__ == '__main__':
     draw = ImageDraw.Draw(im)
 
 
-    files = settings["orphans"]
+    files = settings["orphans"][:2]
     name2chr = settings["ncbi_names"]
     data_chrs = []
     max_value = 0.
     print "Load files..."
     for file_name in files:
         print "Load", file_name
-        bands2chr, _max_value = load_bands_from_bed(file_name, last_column_color=True)
+        chr2bands, _max_value = load_bands_from_bed(file_name, last_column_color=True)
         if _max_value > max_value:
             max_value = float(_max_value)
-        new_bands2chr = {}
-        for key in bands2chr:
+        new_chr2bands = {}
+        for key in chr2bands:
             new_key = key.split("|")[3]
             if new_key in name2chr:
                 new_key = name2chr[new_key]
                 # print key, "-->", new_key, "Size:", len(bands2chr[key])
-                new_bands2chr[new_key] = bands2chr[key]
+                new_chr2bands[new_key] = chr2bands[key]
             else:
                 pass
                 # print "No key", new_key, "Size", len(bands2chr[key])
-        data_chrs.append(new_bands2chr)
+        data_chrs.append(new_chr2bands)
+        
 
     x = settings["canvas"]["left_corner"]
     y = settings["canvas"]["top_corner"]
@@ -64,23 +65,18 @@ if __name__ == '__main__':
 
     print "Compute colors..."
     draw_data = []
-    for i, bands2chr in enumerate(data_chrs):
-        for key in bands2chr:
-            for (start, length, color, border_color) in bands2chr[key]:
+    for i, chr2bands in enumerate(data_chrs):
+        for key in chr2bands:
+            for i, (start, length, color, border_color) in enumerate(chr2bands[key]):
                 c = get_color_by_map(color/max_value)
-                bands2chr[key] = (start, length, c, c)
-        ready_chrs, bands2chr = normalize_chromosome_sizes(chrs, real_chr_size, bands=bands2chr)
-        draw_data.append(ready_chrs, bands2chr)
-    print data_chrs[0]
-        
-
-
+                chr2bands[key][i] = (start, length, c, c)
+        ready_chrs, chr2bands = normalize_chromosome_sizes(chrs, real_chr_size, bands=chr2bands)
+        draw_data.append((ready_chrs, chr2bands))
     
-
-    # 
-
-    # for key in keys:
-    #         length = mouse_chrs[key]
-    #         draw_horizontal_chromosome(draw, x, y, length, bands=bands2chr[key], chr_width=chr_width, name=key, scale=1, stars=None)
-    #         y += space_between_chr
-    # im.save("output_file.png")
+    for key in keys:
+        for ready_chrs, chr2bands in draw_data:
+            length = ready_chrs[key]
+            draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=key, scale=1, stars=None)
+            y += 50
+        y += 100
+    im.save("output_file.png")
