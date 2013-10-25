@@ -33,7 +33,7 @@ if __name__ == '__main__':
     draw = ImageDraw.Draw(im)
 
 
-    files = settings["orphans"][:2]
+    files = settings["orphans"]
     name2chr = settings["ncbi_names"]
     data_chrs = []
     max_value = 0.
@@ -73,10 +73,12 @@ if __name__ == '__main__':
         ready_chrs, chr2bands = normalize_chromosome_sizes(chrs, real_chr_size, bands=chr2bands)
         draw_data.append((ready_chrs, chr2bands))
     
-    for key in keys:
-        for ready_chrs, chr2bands in draw_data:
+
+    for i, (ready_chrs, chr2bands) in enumerate(draw_data):
+        x = settings["canvas"]["left_corner"]
+        y = settings["canvas"]["top_corner"]
+        for key in keys:
             length = ready_chrs[key]
             draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=key, scale=1, stars=None)
-            y += 50
-        y += 100
-    im.save("output_file.png")
+            y += 75
+        im.save("output_file_%s.png" % i)
