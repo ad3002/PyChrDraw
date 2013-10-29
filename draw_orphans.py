@@ -51,8 +51,7 @@ if __name__ == '__main__':
                 pass
                 # print "No key", new_key, "Size", len(bands2chr[key])
         data_chrs.append(new_chr2bands)
-        
-
+    
     x = settings["canvas"]["left_corner"]
     y = settings["canvas"]["top_corner"]
     keys = settings["chromosome_order"]
@@ -63,23 +62,27 @@ if __name__ == '__main__':
     print "Compute colors..."
     draw_data = []
     for i, chr2bands in enumerate(data_chrs):
-        for key in chr2bands:
+        for key in data_chrs[i]:
             for j, (start, length, color, border_color) in enumerate(chr2bands[key]):
                 c = get_color_by_map(color/max_value)
                 data_chrs[i][key][j] = (start, length, c, c)
         ready_chrs, chr2bands = normalize_chromosome_sizes(chrs, real_chr_size, bands=data_chrs[i])
         draw_data.append((ready_chrs, chr2bands))
-    
 
-    for i, (ready_chrs, chr2bands) in enumerate(draw_data):
-        output_image_file = "output_file_%s.png" % i
-        print "Compute image for file", output_image_file
-        im = Image.new("RGBA", (width, height), "#ffffff")
-        draw = ImageDraw.Draw(im)
-        x = settings["canvas"]["left_corner"]
-        y = settings["canvas"]["top_corner"]
-        for key in keys:
+    im = Image.new("RGBA", (width, height), "#ffffff")
+    draw = ImageDraw.Draw(im)    
+    output_image_file = "output_file_%s.png" % "all"
+    x = settings["canvas"]["left_corner"]
+    y = settings["canvas"]["top_corner"]
+    chr_width = 10
+    for key in keys:
+        for i, (ready_chrs, chr2bands) in enumerate(draw_data):        
             length = ready_chrs[key]
-            draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=key, scale=1, stars=None)
-            y += space_between_chr
-        im.save(output_image_file)
+            name = key
+            if i > 0:
+                name = ""
+            draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=name, scale=1, stars=None, font_size=20)
+            y += 20 #space_between_chr
+        y += 30
+    print "Compute image for file", output_image_file
+    im.save(output_image_file)
