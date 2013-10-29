@@ -84,5 +84,9 @@ if __name__ == '__main__':
             draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=name, scale=1, stars=None, font_size=20)
             y += 20 #space_between_chr
         y += 30
+    y = 2600
+    for file_name in files:
+        w, h =draw_legend(draw, file_name, 1000, y, 2000, font_size=20)
+        y += h + 6
     print "Compute image for file", output_image_file
     im.save(output_image_file)
