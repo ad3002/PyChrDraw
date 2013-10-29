@@ -64,9 +64,10 @@ def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
     @param bands: dict of chr name to list of (start, length, color, border) tuples for bands
     @return: (chromosomes, bands)
     '''
+    _chromosomes = {}
     max_chr = float(max(chromosomes.values()))
     for key in chromosomes:
-        chromosomes[key] = int(round(real_size * chromosomes[key] / max_chr, 0))
+        _chromosomes[key] = int(round(real_size * chromosomes[key] / max_chr, 0))
     if bands:
         for key in bands:
             for i, (start, length, color, border) in enumerate(bands[key]):
@@ -76,7 +77,7 @@ def normalize_chromosome_sizes(chromosomes, real_size, bands=None):
                                     color, 
                                     border,
                                 )
-    return chromosomes, bands
+    return _chromosomes, bands
 
 def draw_enrichmnet(settings):
     
@@ -214,7 +215,7 @@ def draw_vertical_chromosome(draw, x, y, length, bands=None, chr_width=100, name
             y += chr_width/2
             draw_legend(draw, "*", x+chr_width+10, y, None, font_size=35)
 
-def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None):
+def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, name=None, scale=1, stars=None, font_size=35):
     '''
     Draw chromosome
     @param draw: ImageDraw object
@@ -250,7 +251,7 @@ def draw_horizontal_chromosome(draw, x, y, length, bands=None, chr_width=100, na
     if stars:
         for x in stars:
             x += chr_width/2
-            draw_legend(draw, "*", x, y+chr_width+10, None, font_size=35)
+            draw_legend(draw, "*", x, y+chr_width+10, None, font_size=font_size)
 
 
 def draw_centromere():
