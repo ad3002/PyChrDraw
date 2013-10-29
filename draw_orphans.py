@@ -72,6 +72,8 @@ if __name__ == '__main__':
     
 
     for i, (ready_chrs, chr2bands) in enumerate(draw_data):
+        output_image_file = "output_file_%s.png" % i
+        print "Compute image for file", output_image_file
         im = Image.new("RGBA", (width, height), "#ffffff")
         draw = ImageDraw.Draw(im)
         x = settings["canvas"]["left_corner"]
@@ -80,4 +82,4 @@ if __name__ == '__main__':
             length = ready_chrs[key]
             draw_horizontal_chromosome(draw, x, y, length, bands=chr2bands[key], chr_width=chr_width, name=key, scale=1, stars=None)
             y += space_between_chr
-        im.save("output_file_%s.png" % i)
+        im.save(output_image_file)
